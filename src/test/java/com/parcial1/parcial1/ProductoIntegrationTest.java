@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 public class ProductoIntegrationTest {
 
@@ -32,7 +32,7 @@ public class ProductoIntegrationTest {
         webTestClient.post().uri("/api/productos")
                 .body(Mono.just(producto), Producto.class)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated() // Cambiar de isOk() a isCreated()
                 .expectBody()
                 .jsonPath("$.nombre").isEqualTo("Teclado")
                 .jsonPath("$.precio").isEqualTo(80.00)
@@ -58,7 +58,7 @@ public class ProductoIntegrationTest {
 
         webTestClient.delete().uri("/api/productos/" + producto.getId())
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isNoContent(); // Cambiar isOk() por isNoContent()
 
         webTestClient.get().uri("/api/productos/" + producto.getId())
                 .exchange()

@@ -36,9 +36,9 @@ public class ProductoServiceTest {
         when(productoRepository.findAll()).thenReturn(Flux.just(producto1, producto2));
 
         StepVerifier.create(productoService.listarProductos())
-            .expectNext(producto1)
-            .expectNext(producto2)
-            .verifyComplete();
+                .expectNext(producto1)
+                .expectNext(producto2)
+                .verifyComplete();
 
         verify(productoRepository, times(1)).findAll();
     }
@@ -50,8 +50,8 @@ public class ProductoServiceTest {
         when(productoRepository.findById("1")).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.obtenerProductoPorId("1"))
-            .expectNext(producto)
-            .verifyComplete();
+                .expectNext(producto)
+                .verifyComplete();
 
         verify(productoRepository, times(1)).findById("1");
     }
@@ -63,9 +63,21 @@ public class ProductoServiceTest {
         when(productoRepository.save(producto)).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.crearProducto(producto))
-            .expectNext(producto)
-            .verifyComplete();
+                .expectNext(producto)
+                .verifyComplete();
 
         verify(productoRepository, times(1)).save(producto);
+    }
+
+    @Test
+    void eliminarProducto_DeberiaEliminarProductoSiExiste() {
+        String productoId = "1";
+
+        when(productoRepository.deleteById(productoId)).thenReturn(Mono.empty());
+
+        StepVerifier.create(productoService.eliminarProducto(productoId))
+                .verifyComplete();
+
+        verify(productoRepository, times(1)).deleteById(productoId);
     }
 }
