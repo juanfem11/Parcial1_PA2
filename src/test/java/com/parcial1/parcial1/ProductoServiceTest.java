@@ -50,7 +50,12 @@ public class ProductoServiceTest {
         when(productoRepository.findById("1")).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.obtenerProductoPorId("1"))
-                .expectNext(producto)
+                .consumeNextWith(result -> {
+                    assertEquals(producto.getId(), result.getId());
+                    assertEquals(producto.getNombre(), result.getNombre());
+                    assertEquals(producto.getPrecio(), result.getPrecio());
+                    assertEquals(producto.getStock(), result.getStock());
+                })
                 .verifyComplete();
 
         verify(productoRepository, times(1)).findById("1");
@@ -63,7 +68,12 @@ public class ProductoServiceTest {
         when(productoRepository.save(producto)).thenReturn(Mono.just(producto));
 
         StepVerifier.create(productoService.crearProducto(producto))
-                .expectNext(producto)
+                .consumeNextWith(result -> {
+                    assertEquals(producto.getId(), result.getId());
+                    assertEquals(producto.getNombre(), result.getNombre());
+                    assertEquals(producto.getPrecio(), result.getPrecio());
+                    assertEquals(producto.getStock(), result.getStock());
+                })
                 .verifyComplete();
 
         verify(productoRepository, times(1)).save(producto);
